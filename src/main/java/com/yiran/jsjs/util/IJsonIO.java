@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public interface IJsonIO {
@@ -23,5 +24,23 @@ public interface IJsonIO {
                     .filter(pPath -> pPath.toString().endsWith(".json"))
                     .toArray(Path[]::new);
         }
+    }
+
+    static void readToHandler(Path pPath, JsonHandler handler) throws IOException {
+        for (Path path : findJsonInDirectory(pPath)) {
+            String fullFileName = path.getFileName().toString();
+            String fileName = fullFileName.substring(0, fullFileName.length() - 5);
+            Path pathBuffer = pPath.relativize(path).getParent();
+            String pathName = "";
+            if (pathBuffer != null) {
+                pathName = pathBuffer.toString().replace("\\", "/");
+            }
+            handler.todo(pathName, fileName, JsonIO.read(path));
+        }
+    }
+
+    @FunctionalInterface
+    interface JsonHandler {
+        void todo(String path, String fileName, Map<?, ?> json);
     }
 }

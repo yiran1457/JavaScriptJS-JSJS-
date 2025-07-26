@@ -11,7 +11,7 @@ description='''${mod_description}'''
 [[dependencies.javascriptjs]] #optional
     modId="forge"
     mandatory=true
-    versionRange="[46,)"
+    versionRange="[43,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.javascriptjs]]
