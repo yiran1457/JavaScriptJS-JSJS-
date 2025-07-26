@@ -26,7 +26,7 @@ public interface IJsonIO {
         }
     }
 
-    static void readToHandler(Path pPath, JsonHandler handler) throws IOException {
+    static void read(Path pPath, JsonReader reader) throws IOException {
         for (Path path : findJsonInDirectory(pPath)) {
             String fullFileName = path.getFileName().toString();
             String fileName = fullFileName.substring(0, fullFileName.length() - 5);
@@ -35,12 +35,12 @@ public interface IJsonIO {
             if (pathBuffer != null) {
                 pathName = pathBuffer.toString().replace("\\", "/");
             }
-            handler.todo(pathName, fileName, JsonIO.read(path));
+            reader.todo(pathName, fileName, JsonIO.read(path));
         }
     }
 
     @FunctionalInterface
-    interface JsonHandler {
+    interface JsonReader {
         void todo(String path, String fileName, Map<?, ?> json);
     }
 }
