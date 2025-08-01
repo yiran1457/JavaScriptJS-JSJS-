@@ -1,11 +1,15 @@
 package com.yiran.jsjs.util;
 
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.Streams;
+import com.google.gson.stream.JsonWriter;
 import dev.latvian.mods.kubejs.util.JsonIO;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +20,21 @@ public interface IJsonIO {
     static void writeAndCreateDirectories(Path path, JsonObject json) throws IOException {
         Files.createDirectories(path.getParent());
         JsonIO.write(path, json);
+    }
+    static void jsjs$write(Path path, JsonElement json) throws IOException {
+        Files.createDirectories(path.getParent());
+        if (json != null && !json.isJsonNull()) {
+            try (Writer fileWriter = Files.newBufferedWriter(path)) {
+                JsonWriter jsonWriter = new JsonWriter(fileWriter);
+                jsonWriter.setIndent("\t");
+                jsonWriter.setSerializeNulls(true);
+                jsonWriter.setLenient(true);
+                Streams.write(json, jsonWriter);
+            }
+
+        } else {
+            Files.deleteIfExists(path);
+        }
     }
 
     static Path[] findJsonInDirectory(@NotNull Path path) throws IOException {
